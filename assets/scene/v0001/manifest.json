@@ -1,0 +1,13 @@
+{
+  "version": "v0001",
+  "glb": "room.glb",
+  "units": "m",
+  "camera": {
+    "fov": 40,
+    "position": [-1.7, 1.7, 1.6],
+    "target": [0.55, 1.05, -0.75]
+  },
+  "budget": { "drawCalls": 20, "tris": 100000 },
+  "atlases": [],
+  "props": []
+}

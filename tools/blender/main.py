@@ -64,6 +64,7 @@ if __name__ == "__main__":
     else:
         # 动态加载 tools/blender/<cmd>.py 的 build(scene) 入口
         import importlib.util
+        sys.path.insert(0, os.path.join(ROOT, "tools", "blender"))
         spec = importlib.util.spec_from_file_location(cmd, os.path.join(ROOT, "tools", "blender", cmd + ".py"))
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
