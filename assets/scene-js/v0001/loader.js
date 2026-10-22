@@ -10,8 +10,12 @@ function report(loaded, total) {
   }));
 }
 
+function resolve(base, name) {
+  return new URL(name, new URL(base, document.baseURI)).href;
+}
+
 export async function fetchManifest(base) {
-  const url = new URL("manifest.json", base).href;
+  const url = resolve(base, "manifest.json");
   const r = await fetch(url);
   if (!r.ok) throw new Error("manifest.json HTTP " + r.status);
   return r.json();
@@ -23,7 +27,7 @@ export async function loadRoom(base) {
   const manifest = await fetchManifest(base);
   const glb = manifest.glb || "room.glb";
   const loader = new GLTFLoader();
-  const gltf = await loader.loadAsync(new URL(glb, base).href, (ev) => {
+  const gltf = await loader.loadAsync(resolve(base, glb), (ev) => {
     if (ev && ev.lengthComputable) report(ev.loaded, ev.total);
     else report(ev ? ev.loaded : 0, 0);
   });

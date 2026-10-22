@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>夏夜老屋</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%230b0d12'/><circle cx='8' cy='6' r='3' fill='%23e8a33d'/></svg>">
   <script>(function(){var t=new URL("assets/vendor/three-0.170.0/three.module.js",location.href),m=document.createElement("script");m.type="importmap";m.textContent=JSON.stringify({imports:{"three":t.href,"three/addons/":new URL("addons/",t).href}});document.currentScript.after(m);})();</script>
   <style id="rm-bg">html{background:#0b0d12}</style>
   <noscript><style>html{background:none}.rm-fallback{display:block!important}</style></noscript>
@@ -132,7 +133,7 @@
   var RM=window.__RM={page:"home", assetBase:d.getElementById("rm-root").dataset.assets||null};
 
   // 文章数据：两个消费方（3D 场景 / 静态版分组）
-  RM.posts=[].map.call(d.querySelectorAll("#rm-posts a"),function(a){return {t:(a.querySelector(".t")||a).textContent,u:a.getAttribute("href"),d:a.dataset.date};});
+  RM.posts=[].map.call((d.getElementById("rm-posts")&&d.getElementById("rm-posts").content||d).querySelectorAll("a"),function(a){return {t:(a.querySelector(".t")||a).textContent,u:a.getAttribute("href"),d:a.dataset.date};});
   RM.postsA=RM.posts.map(function(p){return [p.t,p.u,p.d];});
 
   // about 长文 → 结构化块（段落 + 链接区间）
