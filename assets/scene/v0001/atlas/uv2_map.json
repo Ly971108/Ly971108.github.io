@@ -1,10 +1,10 @@
 {
   "version": "v0001",
   "uv_layer": "UV2",
-  "tex_size": 512,
+  "tex_size": 2048,
   "atlases": {
     "bedding": {
-      "size": 512,
+      "size": 2048,
       "meshes": [
         "prop_bed_blanket",
         "prop_bed_coolmat",
@@ -14,7 +14,7 @@
       ]
     },
     "furniture": {
-      "size": 512,
+      "size": 2048,
       "meshes": [
         "bulb_wire",
         "prop_bed_board_1",
@@ -133,7 +133,7 @@
       ]
     },
     "shell": {
-      "size": 512,
+      "size": 2048,
       "meshes": [
         "beam_1",
         "beam_2",
@@ -147,7 +147,7 @@
       ]
     },
     "walldeco": {
-      "size": 512,
+      "size": 2048,
       "meshes": [
         "prop_award_01_band",
         "prop_award_01_frame",

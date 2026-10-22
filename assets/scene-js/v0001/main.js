@@ -3,7 +3,7 @@
  * GLB 白模加载遍历 → rAF 主循环（enter 后启动）→ resize → __RM_SCENE 调试暴露。
  */
 import * as THREE from "three";
-import { loadRoom, loadProps } from "./loader.js";
+import { loadRoom, loadProps, loadBaked } from "./loader.js";
 import { makeWhite, makeStub, makeSky } from "./materials.js";
 import { initRouter } from "./router.js";
 import { initPerf } from "./perf.js";
@@ -29,8 +29,9 @@ const camera = new THREE.PerspectiveCamera(35, 1, 0.05, 60);
 camera.position.set(2.9, 1.55, 3.1);
 camera.lookAt(-0.3, 1.05, -0.2);
 
-/* M2 临时灯光（M5 由烘焙 shader 替换，届时删除） */
-scene.add(new THREE.HemisphereLight(0xbfd0e0, 0x30281f, 0.9));
+/* M2 临时灯光（M5 烘焙接入后降为微光仅供可动道具，M6 再定稿动态道具照明） */
+const hemiLight = new THREE.HemisphereLight(0xbfd0e0, 0x30281f, 0.9);
+scene.add(hemiLight);
 const keyLight = new THREE.DirectionalLight(0xfff1d6, 1.1);
 keyLight.position.set(2.5, 3.5, 2.0);
 scene.add(keyLight);
@@ -90,6 +91,22 @@ function start() {
         });
         scene.add(p.scene);
       }
+    }
+
+    /* M5：烘焙静态包。就位后隐藏 room/props 里的同名静态 mesh（防双重渲染）。
+     * 临时灯降为微光：烘焙几何自发光无需照明，仅可动道具（旋钮/屏幕/灯泡）需要。 */
+    const baked = await loadBaked(GLB_BASE, manifest);
+    if (baked) {
+      scene.add(baked.group);
+      const hide = baked.hideNames;
+      const hideStatic = (r) => r.traverse(function (o) {
+        if (o.isMesh && hide.has(o.name)) o.visible = false;
+      });
+      hideStatic(room);
+      for (const p of props) hideStatic(p.scene);
+      keyLight.intensity = 0.18;
+      hemiLight.intensity = 0.32;
+      window.__RM_BAKED = baked;
     }
 
     /* manifest 可带固定机位（Blender 侧导出），缺省用上方 fallback */

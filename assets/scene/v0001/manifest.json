@@ -7,7 +7,37 @@
     "position": [-1.55, 1.52, 1.72],
     "target": [0.6, 0.95, -0.5]
   },
-  "budget": { "drawCalls": 20, "tris": 100000 },
-  "atlases": [],
+  "budget": { "drawCalls": 60, "tris": 250000 },
+  "atlases": ["shell", "furniture", "walldeco", "bedding"],
+  "baked": {
+    "static": "scene_static.glb",
+    "uv2map": "atlas/uv2_map.json",
+    "groups": {
+      "shell": {
+        "color": "atlas/shell_color.webp",
+        "irrA": "atlas/shell_irrA.webp",
+        "irrB": "atlas/shell_irrB.webp",
+        "irrC": "atlas/shell_irrC.webp"
+      },
+      "furniture": {
+        "color": "atlas/furniture_color.webp",
+        "irrA": "atlas/furniture_irrA.webp",
+        "irrB": "atlas/furniture_irrB.webp",
+        "irrC": "atlas/furniture_irrC.webp"
+      },
+      "walldeco": {
+        "color": "atlas/walldeco_color.webp",
+        "irrA": "atlas/walldeco_irrA.webp",
+        "irrB": "atlas/walldeco_irrB.webp",
+        "irrC": "atlas/walldeco_irrC.webp"
+      },
+      "bedding": {
+        "color": "atlas/bedding_color.webp",
+        "irrA": "atlas/bedding_irrA.webp",
+        "irrB": "atlas/bedding_irrB.webp",
+        "irrC": "atlas/bedding_irrC.webp"
+      }
+    }
+  },
   "props": ["tv", "desk", "fan", "wall", "audio", "bed", "outside"]
 }

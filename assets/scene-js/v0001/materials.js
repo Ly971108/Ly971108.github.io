@@ -35,18 +35,28 @@ export function makeSky() {
   });
 }
 
-/* ---------- M5 烘焙混合 shader 骨架 ---------- */
+/* ---------- M5 烘焙混合 shader ---------- */
 
+/* 跨图集共享的运行时灯态：M6 拉线灯/电视改这里即全场景生效 */
+export const bakedState = {
+  lampState: { value: 1.0 },                       /* 0=黄昏 1=夜灯 */
+  tvColor:   { value: new THREE.Vector3(0, 0, 0) } /* TV 白光强度 RGB */
+};
+
+/* 烘焙几何取 TEXCOORD_1（Blender UV2 打包层）；ShaderMaterial 需手动声明 uv1 */
 const BAKED_VERT = /* glsl */`
+attribute vec2 uv1;
 varying vec2 vUv;
 void main() {
-  vUv = uv;
+  vUv = uv1;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
 `;
 
 /* 方案：light = mix(irrC, irrA, lampState) + irrB * tvColor
- * irrA=拉线灯+月光  irrB=仅 TV 白光  irrC=黄昏窗光；pow(3.0) 压暗低光区 */
+ * irrA=拉线灯+月光  irrB=仅 TV 白光  irrC=黄昏窗光；pow(3.0) 压暗低光区。
+ * 图集 PNG 经 Blender Standard(sRGB) 编码保存 -> 四图均按 sRGB 采样自动解码为线性；
+ * ShaderMaterial 不带输出编码, 结尾手动 linear->sRGB。 */
 const BAKED_FRAG = /* glsl */`
 precision highp float;
 varying vec2 vUv;
@@ -62,7 +72,7 @@ void main() {
   vec3 tv    = pow(texture2D(mapIrrB, vUv).rgb, vec3(3.0));
   vec3 dusk  = pow(texture2D(mapIrrC, vUv).rgb, vec3(3.0));
   vec3 light = mix(dusk, lamps, clamp(lampState, 0.0, 1.0)) + tv * tvColor;
-  gl_FragColor = vec4(base * light, 1.0);
+  gl_FragColor = vec4(pow(base * light, vec3(0.4545)), 1.0);
 }
 `;
 
@@ -72,7 +82,8 @@ function blankTex() {
   return t;
 }
 
-/* M5：textures = {mapColor, mapIrrA, mapIrrB, mapIrrC}（均为图集纹理） */
+/* textures = {mapColor, mapIrrA, mapIrrB, mapIrrC}（同组图集纹理）；
+ * lampState/tvColor 引用共享 bakedState，全图集同步切换 */
 export function bakedLightShader(textures = {}) {
   return new THREE.ShaderMaterial({
     uniforms: {
@@ -80,8 +91,8 @@ export function bakedLightShader(textures = {}) {
       mapIrrA:   { value: textures.mapIrrA  || blankTex() },
       mapIrrB:   { value: textures.mapIrrB  || blankTex() },
       mapIrrC:   { value: textures.mapIrrC  || blankTex() },
-      lampState: { value: 1.0 },
-      tvColor:   { value: new THREE.Vector3(0, 0, 0) }
+      lampState: bakedState.lampState,
+      tvColor:   bakedState.tvColor
     },
     vertexShader: BAKED_VERT,
     fragmentShader: BAKED_FRAG
