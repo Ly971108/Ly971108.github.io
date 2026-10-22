@@ -1,0 +1,14 @@
+{
+  "name": "rural-room",
+  "private": true,
+  "version": "0.1.0",
+  "description": "夏夜老屋 - 3D personal site (baked-light Three.js room + static fallback)",
+  "type": "module",
+  "scripts": {
+    "build": "node content/build-content.mjs",
+    "serve": "npx serve ."
+  },
+  "dependencies": {
+    "marked": "^14.0.0"
+  }
+}

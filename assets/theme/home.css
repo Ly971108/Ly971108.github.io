@@ -1,0 +1,41 @@
+/* home.css — 静态首页（回退版）布局 */
+.pb-h1 { font-size: 2.6rem; margin: 1.2rem 0 .2rem; }
+.pb-dek { color: var(--ink-dim); font-size: 1.1rem; max-width: 34em; }
+.pb-more { font-size: .95rem; }
+.ph-hero { margin: 1.5rem 0; }
+.ph-hero img { width: 100%; border-radius: 10px; border: 1px solid var(--line); display: block; }
+
+.ph-warn {
+  margin: 1rem 0; padding: .9rem 1.1rem; position: relative;
+  background: #1a1e2b; border: 1px solid var(--line); border-radius: 10px;
+  font-size: .92rem; color: var(--ink-dim);
+}
+.ph-warn-k { margin: 0 0 .3rem; color: var(--accent); font-weight: 600; }
+.ph-warn-t { margin: 0; }
+.ph-warn-a { margin: .5rem 0 0; }
+.ph-warn-x { position: absolute; top: .5rem; right: .7rem; background: none; border: 0; color: var(--ink-dim); font-size: 1.2rem; cursor: pointer; }
+
+section h2 { margin-top: 2.2rem; border-bottom: 1px solid var(--line); padding-bottom: .3rem; }
+ol.pb-idx { list-style: none; margin: 1rem 0; padding: 0; }
+ol.pb-idx li.pb-yr { margin: 1rem 0 .2rem; color: var(--ink-dim); font-family: "ZCOOL QingKe HuangYou", sans-serif; }
+ol.pb-idx li.pb-yr ol { list-style: none; margin: .3rem 0 0; padding: 0; }
+ol.pb-idx li a {
+  display: flex; justify-content: space-between; gap: 1rem; align-items: baseline;
+  padding: .55rem .2rem; border-bottom: 1px dashed var(--line); color: var(--ink);
+}
+ol.pb-idx li a:hover { color: var(--accent); text-decoration: none; }
+ol.pb-idx .d { color: var(--ink-dim); font-size: .88rem; white-space: nowrap; }
+ol.pb-idx .dy { display: inline; }
+li.pb-older button {
+  margin-top: .6rem; background: none; border: 1px dashed var(--line); border-radius: 8px;
+  color: var(--ink-dim); padding: .4rem .9rem; cursor: pointer; font: inherit; font-size: .9rem;
+}
+li.pb-older button:hover { color: var(--accent); border-color: var(--accent); }
+
+.pb-item { padding: .5rem .2rem; border-bottom: 1px dashed var(--line); }
+.pb-hd { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+.pb-hd .t { color: var(--ink); font-weight: 600; }
+a.pb-hd .t { color: var(--accent); }
+.pb-hd .y { color: var(--ink-dim); font-size: .88rem; white-space: nowrap; }
+.pb-item p { margin: .3rem 0 0; color: var(--ink-dim); font-size: .95rem; }
+.pb-lbl { margin: 1.8rem 0 .4rem; color: var(--accent); font-family: "ZCOOL QingKe HuangYou", sans-serif; letter-spacing: .1em; }

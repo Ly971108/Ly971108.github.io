@@ -1,0 +1,10 @@
+{
+  "name": "夏夜老屋",
+  "tagline": "一个可以待着的个人网站",
+  "description": "农村夏夜老屋里的个人网站：写作、笔记与社交链接。CRT 电视旋钮切换频道，风扇、蚊香、星空都在。",
+  "author": "站长",
+  "social": [
+    { "label": "GitHub", "handle": "@Ly971108", "url": "https://github.com/Ly971108" },
+    { "label": "Email", "handle": "待补充", "url": "" }
+  ]
+}

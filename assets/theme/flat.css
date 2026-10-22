@@ -1,0 +1,50 @@
+/* flat.css — 基础排版：静态版 / 文章页 / 关于页共用 */
+:root {
+  --bg: #0b0d12;
+  --panel: #131722;
+  --ink: #e8e2d5;
+  --ink-dim: #9a937f;
+  --accent: #e8a33d; /* 夏夜暖黄 */
+  --accent-2: #7fb069; /* 萤火虫绿 */
+  --line: #262b3a;
+  --max: 46rem;
+}
+html { background: var(--bg); }
+body {
+  margin: 0;
+  color: var(--ink);
+  font: 17px/1.75 "Noto Serif SC", "Songti SC", "SimSun", serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2, h3 { font-family: "ZCOOL QingKe HuangYou", "Noto Serif SC", sans-serif; font-weight: 600; letter-spacing: .04em; }
+h1 { font-size: 2rem; margin: 0 0 .6em; }
+h2 { font-size: 1.4rem; margin: 1.6em 0 .5em; }
+p { margin: .8em 0; }
+code, pre { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: .92em; }
+pre { background: #0d1017; border: 1px solid var(--line); border-radius: 8px; padding: 1em; overflow-x: auto; }
+blockquote { margin: 1em 0; padding: .2em 1em; border-left: 3px solid var(--accent); color: var(--ink-dim); }
+img { max-width: 100%; height: auto; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+header.site {
+  display: flex; align-items: baseline; gap: 1.2rem; flex-wrap: wrap;
+  max-width: var(--max); margin: 0 auto; padding: 1.4rem 1.2rem .8rem;
+  border-bottom: 1px solid var(--line);
+}
+header.site .name { font-family: "ZCOOL QingKe HuangYou", sans-serif; font-size: 1.3rem; color: var(--ink); }
+header.site nav { display: flex; gap: 1rem; margin-left: auto; font-size: .95rem; }
+header.site nav a { color: var(--ink-dim); }
+header.site nav a[aria-current] { color: var(--accent); }
+
+.pb-grid { max-width: var(--max); margin: 0 auto; padding: 1.5rem 1.2rem 4rem; }
+.meta { color: var(--ink-dim); font-size: .9rem; }
+.postnav { margin-top: 3rem; }
+
+footer.pfoot {
+  max-width: var(--max); margin: 0 auto; padding: 1.5rem 1.2rem 3rem;
+  border-top: 1px solid var(--line); color: var(--ink-dim); font-size: .9rem;
+  display: flex; gap: 1rem; flex-wrap: wrap;
+}
+footer.pfoot nav { display: flex; gap: 1rem; }

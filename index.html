@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-accent="warm">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>夏夜老屋</title>
+  <script>(function(){var t=new URL("assets/vendor/three-0.170.0/three.module.js",location.href),m=document.createElement("script");m.type="importmap";m.textContent=JSON.stringify({imports:{"three":t.href,"three/addons/":new URL("addons/",t).href}});document.currentScript.after(m);})();</script>
+  <style id="rm-bg">html{background:#0b0d12}</style>
+  <noscript><style>html{background:none}.rm-fallback{display:block!important}</style></noscript>
+  <meta name="description" content="农村夏夜老屋里的个人网站：写作、笔记与社交链接。CRT 电视旋钮切换频道，风扇、蚊香、星空都在。">
+  <link rel="canonical" href="./">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta property="og:site_name" content="夏夜老屋">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="夏夜老屋">
+  <meta property="og:description" content="农村夏夜老屋里的个人网站：写作、笔记与社交链接。">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "夏夜老屋",
+  "description": "农村夏夜老屋里的个人网站：写作、笔记与社交链接。"
+}
+  </script>
+  <link rel="alternate" type="application/rss+xml" title="夏夜老屋" href="rss.xml">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&family=ZCOOL+QingKe+HuangYou&display=swap" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet"></noscript>
+</head>
+<body class="home-template" data-index="log">
+<div id="rm-root" data-assets="" data-scene="" data-site="夏夜老屋"></div>
+
+<!-- ============ 静态回退版（noscript / 降级 / SEO） ============ -->
+<div class="rm-fallback rm-plain" style="display:none">
+<header class="site">
+  <a class="name" href="./">夏夜老屋</a>
+  <nav aria-label="站点"><a href="about/">关于</a><a href="./#posts">写作</a><a href="./#online">联系</a></nav>
+  <span class="ctl"><a class="ph-room" href="?room=1" data-room title="回到 3D 房间" hidden>3D 房间</a></span>
+</header>
+<div class="pb-grid">
+  <main id="top">
+    <h1 class="pb-h1">夏夜老屋</h1>
+    <p class="pb-dek">一个可以待着的个人网站。写作、笔记与链接，藏在 CRT 电视、作业本和挂历里。</p>
+    <p class="pb-more"><a href="about/">更多关于我</a></p>
+    <figure class="ph-hero"><a id="rm-hero" tabindex="-1" aria-hidden="true"><img src="assets/theme/still.jpg" width="1720" height="716" loading="eager" alt="夏夜农村老屋：课桌、摇头风扇、CRT 电视、蚊香，窗外星空与萤火虫。"></a></figure>
+    <div class="ph-warn" id="rm-warn" data-nosnippet role="note" aria-label="静态版本">
+      <button type="button" class="ph-warn-x" id="rm-warn-x" aria-label="关闭提示" title="关闭" hidden>×</button>
+      <p class="ph-warn-k">静态版本</p>
+      <p class="ph-warn-t">这个网站有一个精心制作的 3D 交互房间。你的设备或浏览器标识显示体验可能不佳，所以进入了静态版本，内容完全一致。</p>
+      <p class="ph-warn-a" id="rm-try" hidden><a href="?room=1">点击这里仍然试试 3D 房间。</a></p>
+    </div>
+    <section id="posts"><h2>写作</h2>
+      <ol class="pb-idx" id="rm-posts-static">
+<!-- RM:static-posts -->
+<li data-y="2026"><a href="posts/architecture-notes/" data-date="22 Oct 2026"><span class="t">本站技术架构备忘</span><span class="d">22 Oct<span class="dy"> 2026</span></span></a></li>
+<li data-y="2026"><a href="posts/hello-world/" data-date="20 Oct 2026"><span class="t">开篇：为什么要做这个网站</span><span class="d">20 Oct<span class="dy"> 2026</span></span></a></li>
+<!-- /RM:static-posts -->
+      </ol>
+    </section>
+    <section id="online"><h2>联系</h2>
+<!-- RM:online -->
+<div class="pb-item"><div class="pb-hd"><a class="t" href="https://github.com/Ly971108">GitHub</a><span class="y">@Ly971108</span></div></div>
+<!-- /RM:online -->
+    </section>
+  </main>
+</div>
+<footer class="pfoot">
+  <nav aria-label="页脚"><a href="./">首页</a><a href="about/">关于</a><a href="./#posts">写作</a><a href="./#online">联系</a></nav>
+  <a class="ph-room" href="?room=1" data-room title="回到 3D 房间" hidden>3D 房间</a>
+</footer>
+</div>
+
+<!-- ============ 3D 房间 HUD 模板 ============ -->
+<template id="rm-desktop">
+  <div id="osd" aria-hidden="true"><div class="tv-scr"><div class="tv-pic"><div class="tv-lb">▶▶ 加载中</div><div class="tv-ch">频道 00</div><div class="tv-mid"><div class="tv-meter"><span class="bar"><i></i></span><span class="pc">0%</span></div><div class="tv-snd on"><span>声音</span><b><i class="s-on">开</i><i class="s-off">关</i></b></div></div></div><div class="tv-noise"></div><div class="tv-glass"></div></div></div>
+  <button id="enter" hidden aria-label="进入房间"></button>
+  <canvas id="gl" aria-label="夏夜农村老屋：CRT 电视旋钮与作业本浏览网站，拉线灯切换黄昏夜晚深夜，风扇四档，蚊香是声音开关，窗外星空萤火虫。"></canvas>
+  <div class="hud top">
+    <button class="name" id="home-link">夏夜老屋</button>
+    <nav class="menu" aria-label="站点">
+      <a href="#about" data-page="about">关于</a>
+      <a href="#posts" data-page="posts">写作</a>
+      <a href="#online" data-page="online">联系</a>
+    </nav>
+  </div>
+  <h1 class="sr">夏夜老屋</h1>
+  <p class="sr">一个可以待着的个人网站。写作、笔记与链接。</p>
+  <section class="hud panel" id="panel" hidden aria-labelledby="p-title">
+    <header><div><div class="ch" id="p-ch">频道 01</div><h2 id="p-title">关于</h2></div><div class="hbtns"><button class="close" id="p-close" aria-label="回到房间">返回</button></div></header>
+    <div class="body" id="p-body"></div>
+  </section>
+  <div class="hud ctl">
+    <div class="hint" id="hint">T 电视频道 · L 拉线灯 · F 风扇 · N 下翻页 · ESC 回到房间</div>
+    <div class="btns">
+      <button class="sound" id="unzoom" hidden>回到房间 · ESC</button>
+      <a class="sound" id="reading" href="?reading=1" title="静态版本">静态版</a>
+      <button class="sound" id="sound" aria-pressed="false">声音 关</button>
+    </div>
+  </div>
+  <div id="tip" hidden></div>
+  <div id="err" hidden></div>
+  <div id="live" class="sr" aria-live="polite"></div>
+</template>
+
+<!-- 结构化内容源：3D 场景与静态版共用 -->
+<template id="rm-about">
+<!-- RM:about -->
+<h1>关于我</h1>
+<p>你好，我是站长。我在这个网站存放我的写作。</p>
+<p>我在城市工作，写代码，也写文字。小时候在农村长大，夏夜的老屋、风扇、蚊香和星空是记忆里最舒服的部分，所以这个网站被做成了那间屋子。</p>
+<h2>写作</h2>
+<p>我写技术，也写生活。文章列表在<a href="/#posts">写作</a>频道，或者直接从静态列表进入。</p>
+<h2>联系</h2>
+<ul>
+<li>GitHub： <a href="https://github.com/Ly971108">@Ly971108</a></li>
+<li>其他联系方式陆续补充</li>
+</ul>
+<h2>这个网站</h2>
+<p>本站是一个 3D 交互场景： CRT 电视旋钮切换频道，拉线灯切换黄昏/夜晚/深夜，风扇有四档，蚊香是声音开关，作业本和挂历里藏着文章。低配置设备会自动进入静态版，内容一致。</p>
+
+<!-- /RM:about -->
+</template>
+<template id="rm-posts">
+<!-- RM:posts -->
+<li data-y="2026"><a href="posts/architecture-notes/" data-date="22 Oct 2026"><span class="t">本站技术架构备忘</span><span class="d">22 Oct</span></a></li>
+<li data-y="2026"><a href="posts/hello-world/" data-date="20 Oct 2026"><span class="t">开篇：为什么要做这个网站</span><span class="d">20 Oct</span></a></li>
+<!-- /RM:posts -->
+</template>
+
+<script>
+(function(){
+  var d=document, root=d.documentElement, q=new URLSearchParams(location.search).get("view");
+  var RM=window.__RM={page:"home", assetBase:d.getElementById("rm-root").dataset.assets||null};
+
+  // 文章数据：两个消费方（3D 场景 / 静态版分组）
+  RM.posts=[].map.call(d.querySelectorAll("#rm-posts a"),function(a){return {t:(a.querySelector(".t")||a).textContent,u:a.getAttribute("href"),d:a.dataset.date};});
+  RM.postsA=RM.posts.map(function(p){return [p.t,p.u,p.d];});
+
+  // about 长文 → 结构化块（段落 + 链接区间）
+  RM.about=(function(){
+    var t=d.getElementById("rm-about"), out=[], sp=function(x){ return x.replace(/\s+/g," ").trim(); };
+    if(!t) return out;
+    var para=function(el){
+      var text="", links=[];
+      (function walk(n){ [].forEach.call(n.childNodes,function(c){
+        if(c.nodeType===3){ text+=c.nodeValue.replace(/\s+/g," "); return; }
+        if(c.nodeType!==1) return;
+        if(c.tagName==="BR"){ text+=" "; return; }
+        var a=c.tagName==="A"&&c.getAttribute("href"), at=text.length; walk(c);
+        if(a&&text.length>at) links.push([at,text.length,c.getAttribute("href")]);
+      }); })(el);
+      var lead=text.length-text.replace(/^\s+/,"").length; text=text.trim();
+      links=links.map(function(l){ return [Math.max(0,l[0]-lead),Math.min(text.length,l[1]-lead),l[2]]; }).filter(function(l){ return l[1]>l[0]; });
+      return links.length?["p",text,links]:["p",text];
+    };
+    (function blocks(root){ [].forEach.call(root.children,function(el){
+      var tag=el.tagName;
+      if(/^H[1-6]$/.test(tag)) out.push(["h",sp(el.textContent)]);
+      else if(tag==="P"){ var b=para(el); if(b[1]) out.push(b); }
+      else if(tag==="UL"||tag==="OL") [].forEach.call(el.children,function(li,i){ out.push(["l",sp(li.textContent),tag==="OL"?(i+1)+".":"*"]); });
+      else if(tag==="BLOCKQUOTE") out.push(["q",sp(el.textContent)]);
+      else if(tag==="HR") out.push(["r"]);
+      else if(tag==="PRE") out.push(["c",el.textContent.replace(/\n$/,"")]);
+      else if(tag==="IMG") out.push(["i",el.getAttribute("alt")||""]);
+      else if(tag==="FIGURE"||tag==="DIV"||tag==="SECTION"){ var img=el.querySelector("img"); if(img&&!el.querySelector("p,h1,h2,h3,ul,ol,pre")) out.push(["i",img.getAttribute("alt")||""]); else blocks(el); }
+    }); })(t.content);
+    return out;
+  })();
+
+  // 场景只在 WebGL2 下运行
+  var gl=false, glx=null; try{ glx=window.WebGL2RenderingContext&&d.createElement("canvas").getContext("webgl2"); gl=!!glx; }catch(e){}
+  var kind="desktop";
+
+  // 路由：hash ↔ 路径翻译 + title 同步（复刻 Felix）
+  var base=new URL("./",location.href).pathname.replace(/\/+$/,"/");
+  var R={home:base,about:base+"about/",posts:base+"posts/",online:base+"online/"}, P={};
+  var ALIAS={};
+  for(var k in R) P[R[k]]=k;
+  var own=function(pg){ return pg==="home"||pg==="about"; };
+  var site=d.getElementById("rm-root").dataset.site||d.title, T={home:site,about:"关于 · "+site,posts:"写作 · "+site,online:"联系 · "+site};
+  for(var t in T) if(t!=="home") T[t]=T[t]; T[RM.page]=d.title;
+  var syncTitle=function(){ var h=location.hash.slice(1); h=ALIAS[h]||h; var pg=R[h]&&!own(h)?h:P[location.pathname]; if(pg&&(pg===h||own(pg))&&T[pg]) d.title=T[pg]; };
+  addEventListener("popstate",function(){ syncTitle(); setTimeout(syncTitle,0); });
+  addEventListener("hashchange",syncTitle); syncTitle();
+
+  RM.pageAt=function(path){ var pg=P[path]; return pg&&own(pg)?pg:""; };
+  { var raw={replaceState:history.replaceState.bind(history),pushState:history.pushState.bind(history)};
+    ["replaceState","pushState"].forEach(function(fn){
+      history[fn]=function(s,t,u){
+        if(typeof u==="string"){
+          var m=u.match(/#(\w+)$/), path=u.split(/[?#]/)[0];
+          if(m&&ALIAS[m[1]]) m=["#"+ALIAS[m[1]],ALIAS[m[1]]];
+          if(m&&R[m[1]]&&own(m[1])) u=R[m[1]]+location.search;
+          else if(m&&R[m[1]]) u=R.home+location.search+m[0];
+          else if(m) u=location.pathname+location.search;
+          else if(u.indexOf("#")<0&&P[path]&&P[path]!=="home") u=R.home+location.search;
+          var pg=m&&R[m[1]]&&!own(m[1])?m[1]:P[u.split(/[?#]/)[0]]; if(pg&&T[pg]) d.title=T[pg];
+        }
+        return raw[fn](s,t,u);
+      };
+    }); }
+
+  // 静态版装配
+  var css=null;
+  RM.plain=function(soft){
+    root.classList.remove("rm-scene","rm-"+kind); if(css) css.disabled=true;
+    var r=d.getElementById("rm-root"); if(r) r.textContent="";
+    var bg=d.getElementById("rm-bg"); if(bg) bg.disabled=true;
+    var home=!!d.querySelector(".rm-plain");
+    if(home&&/^#about$/.test(location.hash)) return location.replace(R.about), true;
+    if(soft){ var t2=d.getElementById("rm-try"); if(t2) t2.hidden=false; var hero=d.getElementById("rm-hero"); if(hero) hero.href="?room=1"; }
+    var warn=d.getElementById("rm-warn"), wx=d.getElementById("rm-warn-x");
+    if(read){ if(warn) warn.hidden=true;
+      [].forEach.call(d.querySelectorAll(".rm-fallback a.ph-room[data-room]"),function(a){ a.href=R.home+"?room=1"; a.hidden=false; });
+      var hero2=d.getElementById("rm-hero"); if(hero2){ hero2.href=R.home+"?room=1"; hero2.onclick=unread; } }
+    else if(warn&&wx){ try{ if(localStorage.getItem("rm.plainWarn")==="off") warn.hidden=true; }catch(e){}
+      wx.hidden=false; wx.onclick=function(){ warn.hidden=true; try{ localStorage.setItem("rm.plainWarn","off"); }catch(e){} }; }
+    // 文章按年份分组，旧年份收进「更早文章」
+    var idx=home&&d.getElementById("rm-posts-static");
+    if(idx&&!idx.dataset.grouped){ idx.dataset.grouped=1; var yr=null, ol=null, from=new Date().getFullYear()-3, old=[], n=0;
+      [].slice.call(idx.children).forEach(function(li){ var y=li.getAttribute("data-y");
+        if(y!==yr){ yr=y; var g=d.createElement("li"); g.className="pb-yr"; g.innerHTML='<span class="y"></span><ol></ol>'; g.firstChild.textContent=y; idx.insertBefore(g,li); ol=g.lastChild;
+          if(+y<from&&g!==idx.firstElementChild){ g.hidden=true; old.push(g); } }
+        ol.appendChild(li); if(ol.parentNode.hidden) n++; }); idx.classList.add("pb-grouped");
+      if(old.length){ var more=d.createElement("li"), mb=d.createElement("button"), y0=old[old.length-1].firstChild.textContent, y1=old[0].firstChild.textContent;
+        more.className="pb-older"; mb.type="button"; mb.textContent=(n===1?"1 篇更早文章":n+" 篇更早文章")+"（"+(y0===y1?y0:y0+"–"+y1)+"）";
+        mb.onclick=function(){ old.forEach(function(g){ g.hidden=false; }); more.remove(); var a=old[0].querySelector("a"); if(a) a.focus({preventScroll:true}); };
+        more.appendChild(mb); idx.appendChild(more); } }
+    var show=function(){ [].forEach.call(d.querySelectorAll(".rm-fallback"),function(e){ e.style.display="block"; }); }, left=0;
+    ["assets/theme/flat.css","assets/theme/home.css"].forEach(function(h,i){
+      var l=d.createElement("link"); l.rel="stylesheet"; l.href=h; if(i){ left++; l.onload=l.onerror=function(){ if(!--left) show(); }; } d.head.appendChild(l); });
+    setTimeout(show,3000); return true;
+  };
+
+  // 软渲染黑名单（CPU 渲染会把机器拖死：Hacker News 事件教训）
+  var soft=false; try{ if(gl&&!navigator.webdriver&&!/[?&]room=1\b/.test(location.search)){
+    var ri=glx.getExtension("WEBGL_debug_renderer_info"), rn=String(glx.getParameter(ri?ri.UNMASKED_RENDERER_WEBGL:glx.RENDERER)||"");
+    soft=/swiftshader|llvmpipe|softpipe|lavapipe|software|basic render/i.test(rn)||!d.createElement("canvas").getContext("webgl2",{failIfMajorPerformanceCaveat:true}); } }catch(e){}
+
+  var force=/[?&]plain=1\b/.test(location.search)&&!/[?&]room=1\b/.test(location.search);
+  var unread=function(){ try{ localStorage.removeItem("rm.view"); }catch(e){} }, read=false;
+  try{ if(/[?&]room=1\b/.test(location.search)) unread();
+    else if(/[?&]reading=1\b/.test(location.search)){ read=true; localStorage.setItem("rm.view","reading"); }
+    else read=localStorage.getItem("rm.view")==="reading"; }catch(e){ read=/[?&]reading=1\b/.test(location.search)&&!/[?&]room=1\b/.test(location.search); }
+  if(read) force=true;
+
+  // 触屏 + 小屏：v1 默认静态版
+  var coarse=false; try{ coarse=matchMedia("(pointer:coarse)").matches&&Math.min(screen.width,screen.height)<760; }catch(e){}
+
+  // 场景资产未就绪（M0 阶段）→ 也进静态版
+  var assetsReady=!!d.getElementById("rm-root").dataset.scene;
+
+  if(!gl||soft||force||coarse||!assetsReady){ RM.plain(read?false:soft||(force&&gl)); return; }
+  root.classList.add("rm-scene","rm-"+kind);
+  css=d.createElement("link"); css.rel="stylesheet"; css.href=d.getElementById("rm-root").dataset.scene+"/desktop.css"; d.head.appendChild(css);
+  var mounted=false;
+  function mount(){
+    if(mounted) return; mounted=true;
+    d.getElementById("rm-root").appendChild(d.getElementById("rm-"+kind).content.cloneNode(true));
+    var b=d.createElement("script"); b.src=d.getElementById("rm-root").dataset.scene+"/boot.js"; b.async=false; d.body.appendChild(b);
+    var s=d.createElement("script"); s.type="module"; s.src=d.getElementById("rm-root").dataset.scene+"/main.js"; d.body.appendChild(s);
+  }
+  css.onload=css.onerror=mount; setTimeout(mount,4000);
+})();
+</script>
+</body>
+</html>
