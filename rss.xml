@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+  <title>夏夜老屋</title>
+  <description>农村夏夜老屋里的个人网站：写作、笔记与社交链接。CRT 电视旋钮切换频道，风扇、蚊香、星空都在。</description>
+  <link>./</link>
+  <item>
+    <title>本站技术架构备忘</title>
+    <link>posts/architecture-notes/</link>
+    <guid>posts/architecture-notes/</guid>
+    <pubDate>Thu, 22 Oct 2026 00:00:00 GMT</pubDate>
+    <description>静态生成 + 烘焙光照 3D 场景 + 内容桥的设计决策记录。</description>
+  </item>
+  <item>
+    <title>开篇：为什么要做这个网站</title>
+    <link>posts/hello-world/</link>
+    <guid>posts/hello-world/</guid>
+    <pubDate>Tue, 20 Oct 2026 00:00:00 GMT</pubDate>
+    <description>用 3D 场景重建夏夜老屋，存放我的写作。</description>
+  </item>
+</channel>
+</rss>
