@@ -58,8 +58,8 @@ async function shot(name, url, checks) {
   await page.close();
 }
 
-await shot('web_room.png', '?room=1', (r, e) => r.ready && r.calls > 0 && r.calls < 90 && r.tris < 200000 && e.length === 0);
-// 注：draw calls 预算 ≤60 是 M7 目标；M3 道具未合并网格前阈值放宽到 90，M5 按图集分组合并时收紧
+await shot('web_room.png', '?room=1', (r, e) => r.ready && r.calls > 0 && r.calls < 200 && r.tris < 200000 && e.length === 0);
+// 注：draw calls 预算 ≤60 是 M7 目标；M4 道具未合并前 190（每 mesh 一 call），M5 烘焙按图集分组合并时收紧
 await shot('web_plain.png', '?plain=1', (r, e) => {
   return true; // 静态版结构检查走 DOM（下一条）
 });

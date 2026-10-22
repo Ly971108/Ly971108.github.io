@@ -3,11 +3,11 @@
   "glb": "room.glb",
   "units": "m",
   "camera": {
-    "fov": 40,
-    "position": [-1.7, 1.7, 1.6],
-    "target": [0.55, 1.05, -0.75]
+    "fov": 42,
+    "position": [-1.55, 1.52, 1.72],
+    "target": [0.6, 0.95, -0.5]
   },
   "budget": { "drawCalls": 20, "tris": 100000 },
   "atlases": [],
-  "props": ["tv", "desk", "fan"]
+  "props": ["tv", "desk", "fan", "wall", "audio", "bed", "outside"]
 }

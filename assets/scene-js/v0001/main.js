@@ -77,8 +77,12 @@ function start() {
     /* M3：道具 GLB 叠加加载；道具就位后隐藏对应占位盒 */
     const props = await loadProps(GLB_BASE, manifest.props);
     if (props.length) {
+      const hasOutside = props.some(p => p.name === "outside");
       room.traverse(function (o) {
-        if (o.isMesh && /_stub$/i.test(o.name || "")) o.visible = false;
+        if (!o.isMesh) return;
+        const n = (o.name || "").toLowerCase();
+        if (/_stub$/i.test(n)) o.visible = false;
+        if (hasOutside && n.indexOf("sky_plane") >= 0) o.visible = false; /* outside 模块自带天空 */
       });
       for (const p of props) {
         p.scene.traverse(function (o) {
