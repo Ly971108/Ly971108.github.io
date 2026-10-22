@@ -1,0 +1,343 @@
+/* 夏夜老屋 M2 — desktop.css
+ * 3D 房间 HUD：深底 + 暖黄 accent(#e8a33d)。
+ * OSD 电视加载层（噪点/扫描线/玻璃反光）· 顶导航 · 底控制条 ·
+ * #panel 毛玻璃卡片 · #tip/#err · .sr · 响应式。
+ * 仅在 html.rm-scene（index.html 自举加类）下生效，不污染静态版。
+ */
+
+html.rm-scene, html.rm-scene body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #07080d;
+  color: #e8e2d5;
+  font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+html.rm-scene #rm-root { position: fixed; inset: 0; }
+
+/* ---------- canvas ---------- */
+#gl {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---------- OSD 电视加载层 ---------- */
+#osd {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(120% 120% at 50% 40%, #10131b 0%, #07080d 70%);
+  opacity: 1;
+  transition: opacity .6s ease;
+}
+#osd.off { opacity: 0; pointer-events: none; }
+#osd.gone { display: none; }
+
+.tv-scr {
+  position: relative;
+  width: min(72vw, 760px);
+  aspect-ratio: 4 / 3;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 0 0 6px #1a1d24, 0 0 60px rgba(0,0,0,.8), inset 0 0 40px rgba(0,0,0,.9);
+}
+.tv-pic {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .4em;
+  color: #d8d2c4;
+  text-shadow: 0 0 6px rgba(216,210,196,.5);
+  font-family: "ZCOOL QingKe HuangYou", "Noto Serif SC", monospace;
+  letter-spacing: .12em;
+  user-select: none;
+}
+.tv-lb { font-size: clamp(20px, 3.2vw, 34px); }
+.tv-ch { font-size: clamp(14px, 1.8vw, 20px); opacity: .8; }
+.tv-mid { margin-top: 1.2em; display: flex; flex-direction: column; align-items: center; gap: .8em; }
+
+.tv-meter { display: flex; align-items: center; gap: .8em; }
+.tv-meter .bar {
+  display: inline-block;
+  width: min(38vw, 320px);
+  height: 8px;
+  border: 1px solid #4a463a;
+  border-radius: 4px;
+  background: #0c0e13;
+  overflow: hidden;
+}
+.tv-meter .bar i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #9a6b23, #e8a33d);
+  box-shadow: 0 0 8px rgba(232,163,61,.7);
+  transition: width .2s ease;
+}
+.tv-meter .pc { font-size: 14px; min-width: 3.2em; text-align: right; color: #e8a33d; }
+
+.tv-snd { font-size: 13px; opacity: .55; display: flex; gap: .6em; align-items: baseline; }
+.tv-snd b { font-weight: normal; }
+.tv-snd .s-on, .tv-snd .s-off { font-style: normal; }
+.tv-snd.on .s-off, .tv-snd:not(.on) .s-on { display: none; }
+
+/* 噪点 */
+.tv-noise {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: .16;
+  background-image: repeating-conic-gradient(#000 0 .0001turn, #3c3c3c .0002turn .0003turn, #000 .0004turn .0006turn);
+  background-size: 170px 170px;
+  animation: rm-noise .28s steps(4) infinite;
+}
+@keyframes rm-noise {
+  0% { background-position: 0 0; }
+  25% { background-position: -42px 31px; }
+  50% { background-position: 31px -57px; }
+  75% { background-position: -63px -21px; }
+  100% { background-position: 0 0; }
+}
+
+/* 扫描线 + 玻璃反光 */
+.tv-scr::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,.28) 0 1px, transparent 1px 3px);
+}
+.tv-glass {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(90% 55% at 28% 12%, rgba(255,255,255,.10), transparent 60%),
+    radial-gradient(120% 90% at 50% 115%, rgba(120,140,190,.08), transparent 55%);
+}
+
+/* ---------- #enter ---------- */
+#enter {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 41;
+  transform: translate(-50%, -50%);
+  padding: .7em 2.4em;
+  font: inherit;
+  font-size: clamp(18px, 2.4vw, 26px);
+  letter-spacing: .3em;
+  text-indent: .3em;
+  color: #e8a33d;
+  background: rgba(14,16,22,.72);
+  border: 1px solid rgba(232,163,61,.55);
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: background .2s ease, box-shadow .2s ease;
+}
+#enter::before { content: "进入房间"; }
+#enter:hover, #enter:focus-visible {
+  background: rgba(232,163,61,.14);
+  box-shadow: 0 0 24px rgba(232,163,61,.35);
+  outline: none;
+}
+
+/* ---------- 顶部导航 ---------- */
+.hud.top {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 1.4em;
+  padding: .7em 1.2em;
+  background: linear-gradient(180deg, rgba(7,8,13,.82), rgba(7,8,13,0));
+  pointer-events: none;
+}
+.hud.top > * { pointer-events: auto; }
+.hud.top .name {
+  font: inherit;
+  font-size: 1.05em;
+  font-weight: 600;
+  letter-spacing: .18em;
+  color: #e8e2d5;
+  background: none;
+  border: 0;
+  padding: .2em 0;
+  cursor: pointer;
+}
+.hud.top .name:hover { color: #e8a33d; }
+.hud.top .menu { display: flex; gap: 1.1em; }
+.hud.top .menu a {
+  color: #b9b2a2;
+  text-decoration: none;
+  font-size: .95em;
+  letter-spacing: .1em;
+  padding: .2em .1em;
+  border-bottom: 2px solid transparent;
+  transition: color .2s ease;
+}
+.hud.top .menu a:hover { color: #e8e2d5; }
+.hud.top .menu a[aria-current="page"] {
+  color: #e8a33d;
+  border-bottom-color: #e8a33d;
+}
+
+/* ---------- 底部控制条 ---------- */
+.hud.ctl {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  padding: .7em 1.2em;
+  background: linear-gradient(0deg, rgba(7,8,13,.82), rgba(7,8,13,0));
+  pointer-events: none;
+}
+.hud.ctl > * { pointer-events: auto; }
+.hud.ctl .hint { font-size: .8em; color: #8d8778; letter-spacing: .05em; }
+.hud.ctl .btns { display: flex; gap: .6em; }
+.hud.ctl .sound {
+  font: inherit;
+  font-size: .85em;
+  color: #cfc8b8;
+  background: rgba(20,23,31,.7);
+  border: 1px solid #343947;
+  border-radius: 999px;
+  padding: .35em 1em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color .2s ease, color .2s ease;
+}
+.hud.ctl .sound:hover { border-color: #e8a33d; color: #e8a33d; }
+.hud.ctl #sound[aria-pressed="true"] { color: #e8a33d; border-color: rgba(232,163,61,.6); }
+
+/* ---------- #panel 卡片 ---------- */
+.hud.panel {
+  position: fixed;
+  right: 1.4em;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 22;
+  width: min(30em, 86vw);
+  max-height: 76vh;
+  overflow: auto;
+  background: rgba(13,15,21,.78);
+  border: 1px solid rgba(232,163,61,.28);
+  border-radius: 14px;
+  backdrop-filter: blur(14px) saturate(1.1);
+  box-shadow: 0 12px 48px rgba(0,0,0,.55);
+  padding: 1.1em 1.3em;
+}
+.hud.panel header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1em;
+  border-bottom: 1px solid rgba(232,226,213,.12);
+  padding-bottom: .6em;
+  margin-bottom: .8em;
+}
+.hud.panel .ch { font-size: .75em; color: #e8a33d; letter-spacing: .2em; }
+.hud.panel h2 { margin: .1em 0 0; font-size: 1.25em; letter-spacing: .1em; }
+.hud.panel .close {
+  font: inherit;
+  font-size: .85em;
+  color: #cfc8b8;
+  background: none;
+  border: 1px solid #343947;
+  border-radius: 999px;
+  padding: .3em 1em;
+  cursor: pointer;
+}
+.hud.panel .close:hover { color: #e8a33d; border-color: #e8a33d; }
+.hud.panel .body { font-size: .95em; color: #d8d2c4; }
+.hud.panel .body a { color: #e8a33d; }
+
+/* ---------- #tip / #err / #rm-perf ---------- */
+#tip {
+  position: fixed;
+  left: 50%;
+  bottom: 4.6em;
+  transform: translateX(-50%);
+  z-index: 24;
+  padding: .35em 1em;
+  font-size: .85em;
+  color: #e8e2d5;
+  background: rgba(13,15,21,.85);
+  border: 1px solid rgba(232,163,61,.35);
+  border-radius: 999px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+#err {
+  position: fixed;
+  left: 50%;
+  top: 1em;
+  transform: translateX(-50%);
+  z-index: 50;
+  max-width: 86vw;
+  padding: .5em 1.2em;
+  font-size: .9em;
+  color: #ffd9d9;
+  background: rgba(60,16,16,.9);
+  border: 1px solid #a33;
+  border-radius: 10px;
+}
+#rm-perf {
+  position: fixed;
+  right: .8em;
+  top: .8em;
+  z-index: 60;
+  font: 12px/1.4 ui-monospace, Consolas, monospace;
+  color: #9fe08a;
+  background: rgba(7,8,13,.8);
+  border: 1px solid #2a2f3a;
+  border-radius: 6px;
+  padding: .3em .7em;
+  pointer-events: none;
+}
+
+/* ---------- 屏幕阅读器 ---------- */
+.sr {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- 响应式：窄屏缩小 HUD ---------- */
+@media (max-width: 760px) {
+  html.rm-scene body { font-size: 14px; }
+  .hud.top { padding: .5em .8em; gap: .9em; }
+  .hud.top .menu { gap: .7em; }
+  .hud.ctl { padding: .5em .8em; }
+  .hud.ctl .hint { display: none; }
+  .hud.panel { right: 50%; transform: translate(50%, -50%); }
+  .tv-scr { width: 88vw; }
+}
