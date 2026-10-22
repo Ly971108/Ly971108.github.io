@@ -9,5 +9,5 @@
   },
   "budget": { "drawCalls": 20, "tris": 100000 },
   "atlases": [],
-  "props": []
+  "props": ["tv", "desk", "fan"]
 }

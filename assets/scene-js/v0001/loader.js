@@ -41,3 +41,19 @@ export async function loadRoom(base) {
 export function applyBaked(mesh, atlas) {
   return mesh;
 }
+
+/* M3：按 manifest.props 名列表加载道具 GLB（props/<name>.glb），返回 [{name, scene}] */
+export async function loadProps(base, names) {
+  const loader = new GLTFLoader();
+  const out = [];
+  for (const name of names || []) {
+    try {
+      const gltf = await loader.loadAsync(resolve(base, "props/" + name + ".glb"));
+      out.push({ name, scene: gltf.scene });
+      report(out.length, (names || []).length);
+    } catch (e) {
+      console.warn("[RM] prop 加载失败（忽略）:", name, e && e.message);
+    }
+  }
+  return out;
+}

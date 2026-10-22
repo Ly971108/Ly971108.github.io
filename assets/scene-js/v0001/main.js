@@ -3,7 +3,7 @@
  * GLB 白模加载遍历 → rAF 主循环（enter 后启动）→ resize → __RM_SCENE 调试暴露。
  */
 import * as THREE from "three";
-import { loadRoom } from "./loader.js";
+import { loadRoom, loadProps } from "./loader.js";
 import { makeWhite, makeStub, makeSky } from "./materials.js";
 import { initRouter } from "./router.js";
 import { initPerf } from "./perf.js";
@@ -73,6 +73,20 @@ function start() {
       else if (!o.material) o.material = makeWhite();
     });
     scene.add(room);
+
+    /* M3：道具 GLB 叠加加载；道具就位后隐藏对应占位盒 */
+    const props = await loadProps(GLB_BASE, manifest.props);
+    if (props.length) {
+      room.traverse(function (o) {
+        if (o.isMesh && /_stub$/i.test(o.name || "")) o.visible = false;
+      });
+      for (const p of props) {
+        p.scene.traverse(function (o) {
+          if (o.isMesh && !o.material) o.material = makeWhite();
+        });
+        scene.add(p.scene);
+      }
+    }
 
     /* manifest 可带固定机位（Blender 侧导出），缺省用上方 fallback */
     const c = manifest.camera;
