@@ -219,7 +219,7 @@ export function initScreen(scene) {
     console.warn("[RM][screen] prop_tv_screen 缺失，屏幕模块以空 API 降级");
     return {
       setChannel() {}, nextChannel() { return 0; }, getChannel() { return 0; },
-      osd() {}, onChannel() {}, selectNext() {}, selectPrev() {}, openSelected() {}, setGain() {},
+      osd() {}, onChannel() {}, nextItem() {}, selectNext() {}, selectPrev() {}, openSelected() {}, setGain() {},
     };
   }
 
@@ -283,9 +283,11 @@ export function initScreen(scene) {
   }
 
   function paintOverlays(now) {
-    /* 频道号大 OSD：切换后 ~0.9s 左上角大数字 */
+    /* 频道号大 OSD：切换后 ~0.9s 左上角大数字（暗底衬保证压在标题上也可读） */
     if (now - switchAt < 900) {
       const a = 1 - (now - switchAt) / 900;
+      ctx.fillStyle = "rgba(4,6,3,0.72)";
+      ctx.fillRect(18, 58, 120, 72);
       setFont(ctx, 64);
       ctx.fillStyle = "rgba(242,230,200," + (0.55 + 0.45 * a).toFixed(3) + ")";
       ctx.fillText("0" + (channel + 1), 30, 116);
@@ -628,10 +630,20 @@ export function initScreen(scene) {
       if (typeof fn === "function") channelCbs.push(fn);
     },
 
-    /* --- 契约外附加（供 interact.js 驱动选择移动；不改变契约签名） --- */
-    selectNext() {
+    /* --- 契约附加（主会话补充）：写作频道列表下移选择，到尾循环回首；其他频道空操作 --- */
+    nextItem() {
+      if (channel !== 1 || standby) return;
       const posts = readRM().posts;
-      if (!posts.length || channel !== 1) return selIdx;
+      if (!posts.length) return;
+      selIdx = (selIdx + 1) % posts.length;
+      draw();
+    },
+
+    /* --- 契约外附加便利（不改变契约签名） --- */
+    selectNext() {
+      if (channel !== 1) return selIdx;
+      const posts = readRM().posts;
+      if (!posts.length) return selIdx;
       selIdx = (selIdx + 1) % posts.length;
       draw();
       return selIdx;

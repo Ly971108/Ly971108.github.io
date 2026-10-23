@@ -10,6 +10,11 @@ const CHANNEL_HASH = ["#about", "#posts", "#archive", "#online"];
 
 const state = (window.__RM_STATE = { lamp: 0, fan: 0, sound: false, channel: 0, volume: 2 });
 
+/* SFX 事件总线：audio.js(M8) 监听 __RM_ACTION 播放合成音效 */
+function sfx(type) {
+  window.dispatchEvent(new CustomEvent("__RM_ACTION", { detail: { type: type } }));
+}
+
 let scene, camera, renderer, baked, screenApi, panelApi;
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
@@ -36,6 +41,7 @@ function collectTargets() {
         state.channel = ch;
         setHash(CHANNEL_HASH[ch] || "#about");
         tvFlash = 120;
+        sfx("knob");
       }
     });
 
@@ -43,6 +49,7 @@ function collectTargets() {
     "音量 (V)", () => {
       state.volume = (state.volume + 1) % 4;
       osd("音量 " + (state.volume === 0 ? "静音" : state.volume + "/3"));
+      sfx("knob");
     });
 
   /* 拉线：cord → bulb_wire → bulb_glass 依次兜底 */
@@ -52,6 +59,7 @@ function collectTargets() {
     state.lamp = (state.lamp + 1) % LAMP_STEPS.length;
     lampTarget = LAMP_STEPS[state.lamp];
     osd("灯光 · " + LAMP_NAMES[state.lamp]);
+    sfx("pull");
   });
 
   /* 风扇档位按钮（命名 prop_fan_button，无 knob/switch 后缀） */
@@ -59,6 +67,7 @@ function collectTargets() {
     "风扇档位 (F)", () => {
       state.fan = (state.fan + 1) % 4;
       osd("风扇 · " + (state.fan === 0 ? "关" : state.fan + " 档"));
+      sfx("knob");
     });
 
   add([scene.getObjectByName("prop_mosq_ember")].filter(Boolean),
@@ -71,6 +80,7 @@ function collectTargets() {
     "作业本 · 阅读", () => {
       const p = (window.__RM && window.__RM.posts && window.__RM.posts[0]) || null;
       if (panelApi && panelApi.openPost) panelApi.openPost(p ? p.u : "posts/index.html");
+      sfx("page");
     });
 
   /* 奖状墙：任何 prop_award_ 前缀 mesh → ABOUT 频道 */

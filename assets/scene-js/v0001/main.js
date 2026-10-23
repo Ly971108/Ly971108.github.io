@@ -10,6 +10,8 @@ import { initPerf } from "./perf.js";
 import { initScreen } from "./screen.js";
 import { initPanel } from "./panel.js";
 import { initInteract } from "./interact.js";
+import { initAnim } from "./anim.js";
+import { initAudio } from "./audio.js";
 
 const root = document.getElementById("rm-root");
 /* data-scene-glb（camel）或 data-sceneglb 均可；缺省 assets/scene/v0001/ */
@@ -51,13 +53,15 @@ const perf = initPerf(renderer);
 initRouter();
 
 let started = false;
-let interact = null;
+let interact = null, animApi = null, audioApi = null;
 let lastT = 0;
 function frame(t) {
   requestAnimationFrame(frame);
   const dt = lastT ? Math.min(t - lastT, 100) : 16;
   lastT = t;
   if (interact) interact.tick(dt);
+  if (animApi) animApi.tick(dt, t);
+  if (audioApi) audioApi.tick(dt);
   renderer.render(scene, camera);
   perf.tick();
 }
@@ -124,6 +128,14 @@ function start() {
     interact = initInteract({ scene, camera, renderer, baked, screen: screenApi, panel: panelApi });
     window.__RM_SCREEN = screenApi;
     window.__RM_PANEL_API = panelApi;
+    if (panelApi) window.__RM_OPEN_POST = (url) => panelApi.openPost(url);
+
+    /* M7/M8：氛围动画 + 声音（缺模块/无声卡静默降级） */
+    try { animApi = initAnim({ scene: scene, bakedState: baked ? baked.bakedState : null }); }
+    catch (e) { console.warn("[RM] anim 初始化失败:", e && e.message); }
+    try { audioApi = initAudio(); } catch (e) { console.warn("[RM] audio 初始化失败:", e && e.message); }
+    window.__RM_ANIM = animApi;
+    window.__RM_AUDIO = audioApi;
 
     /* manifest 可带固定机位（Blender 侧导出），缺省用上方 fallback */
     const c = manifest.camera;
