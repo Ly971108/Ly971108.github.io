@@ -64,10 +64,20 @@ uniform sampler2D mapColor;
 uniform sampler2D mapIrrA;
 uniform sampler2D mapIrrB;
 uniform sampler2D mapIrrC;
+uniform vec2 uTexel;
 uniform float lampState;
 uniform vec3 tvColor;
+/* M11d: 轻度反锐化 —— 2048 图集贴近看发糊, 中心 1.6/四邻 -0.15 提升细节 */
+vec3 sharpColor(vec2 uv) {
+  vec3 c0 = texture2D(mapColor, uv).rgb;
+  vec3 s = texture2D(mapColor, uv + vec2(uTexel.x, 0.0)).rgb
+         + texture2D(mapColor, uv - vec2(uTexel.x, 0.0)).rgb
+         + texture2D(mapColor, uv + vec2(0.0, uTexel.y)).rgb
+         + texture2D(mapColor, uv - vec2(0.0, uTexel.y)).rgb;
+  return clamp(c0 * 1.6 - s * 0.15, 0.0, 1.0);
+}
 void main() {
-  vec3 base  = texture2D(mapColor, vUv).rgb;
+  vec3 base  = sharpColor(vUv);
   /* M11c: 对比度 3.0→1.8 —— 原曲线把中间调压成棕泥(用户实拍反馈看不清),
    * 1.8 保留夜灯反差同时暗部细节可读 */
   vec3 lamps = pow(texture2D(mapIrrA, vUv).rgb, vec3(1.8));
@@ -99,7 +109,8 @@ export function bakedLightShader(textures = {}) {
       mapIrrB:   { value: textures.mapIrrB  || blankTex() },
       mapIrrC:   { value: textures.mapIrrC  || blankTex() },
       lampState: bakedState.lampState,
-      tvColor:   bakedState.tvColor
+      tvColor:   bakedState.tvColor,
+      uTexel:    { value: new THREE.Vector2(1 / 2048, 1 / 2048) }
     },
     vertexShader: BAKED_VERT,
     fragmentShader: BAKED_FRAG

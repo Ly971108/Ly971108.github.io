@@ -53,7 +53,7 @@ applyCam();
 addEventListener("wheel", (ev) => {
   if (document.querySelector(".rm-panel-overlay:not([hidden])")) return;
   if (!started) return;
-  camDist = Math.min(5.0, Math.max(2.0, camDist * (1 + ev.deltaY * 0.0012)));
+  camDist = Math.min(5.0, Math.max(1.2, camDist * (1 + ev.deltaY * 0.0012)));
   applyCam();
 }, { passive: true });
 
@@ -142,6 +142,51 @@ function start() {
         });
         scene.add(p.scene);
       }
+
+      /* M11d: 窗外夜景可读性 —— GLTF 自发光弱+ACES 压暗, 剪影风格统一提亮
+       * (GLB 根节点无名, 按 outside_ 前缀收集) */
+      const outsideMeshes = [];
+      scene.traverse(function (o) { if (o.isMesh && /^outside_/.test(o.name || "")) outsideMeshes.push(o); });
+      outsideMeshes.forEach(function (o) {
+        const m = o.material, n = (o.name || "").toLowerCase();
+        if (m.color) m.emissive.copy(m.color);
+        if (n.indexOf("halo") >= 0) {
+          /* 光晕贴图 alpha 未随 GLB 生效 → 变灰板挡月亮; 改加色混合成辉光 */
+          m.transparent = true; m.depthWrite = false;
+          m.blending = THREE.AdditiveBlending;
+          if (m.map) m.alphaMap = m.map;
+          m.emissiveIntensity = 1.0;
+          /* 悬到山前(原 x=14 被三层山脊全挡): 近窗天空挂月+辉光 */
+          o.position.set(8.56, -0.2, 3.1);
+          o.scale.setScalar(0.55);
+          return;
+        }
+        if (n === "outside_sky") {
+          /* Blender ColorRamp 未随 GLTF 导出 → 灰板; 运行时定深蓝夜色 */
+          m.color.setHex(0x0a1226);
+          m.emissive.setHex(0x0a1226);
+          m.emissiveIntensity = 1.0;
+          return;
+        }
+        if (n === "outside_moon") {
+          m.emissiveIntensity = 2.4;
+          o.position.set(8.5, -0.2, 3.1);
+          o.scale.setScalar(0.9);
+          return;
+        }
+        m.emissiveIntensity =
+          n.indexOf("moon") >= 0 ? 2.4 :
+          n.indexOf("stars") >= 0 ? 1.8 :
+          n.indexOf("sky")  >= 0 ? 0.35 :
+          n.indexOf("mtn_far")  >= 0 ? 0.70 :
+          n.indexOf("mtn_mid")  >= 0 ? 0.55 :
+          n.indexOf("mtn_near") >= 0 ? 0.45 :
+          n.indexOf("tree") >= 0 ? 0.5 :
+          n.indexOf("path") >= 0 ? 0.6 :
+          n.indexOf("ground") >= 0 ? 0.35 :
+          n.indexOf("insu") >= 0 ? 0.8 :
+          n.indexOf("pole") >= 0 ? 0.5 : 0.5;
+      });
     }
 
     /* M5：烘焙静态包。就位后隐藏 room/props 里的同名静态 mesh（防双重渲染）。
