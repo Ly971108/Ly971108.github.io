@@ -229,9 +229,15 @@ function tick(dt) {
     const k = Math.max(0, tvFlash / 120);
     baked.bakedState.tvColor.value.setScalar(0.9 * k * k);
   } else {
-    /* 常态微光：屏幕待机功耗感（频道 0 ABOUT 最亮） */
-    const base = state.channel === 0 ? 0.10 : 0.06;
-    baked.bakedState.tvColor.value.set(base, base * 0.95, base * 0.85);
+    /* M11e(Felix 提示): TV 光按频道内容染色房间 —— irrB 白图 × 频道色调 */
+    const TINTS = [
+      [0.09, 0.14, 0.09],                          /* ABOUT 绿终端 */
+      [0.13, 0.10, 0.06],                          /* 写作 暖琥珀 */
+      [0.08, 0.10, 0.14],                          /* 归档 冷蓝 */
+      [0.12, 0.08, 0.13]                           /* ONLINE 紫 */
+    ];
+    const t = TINTS[state.channel] || TINTS[0];
+    baked.bakedState.tvColor.value.set(t[0], t[1], t[2]);
   }
 }
 

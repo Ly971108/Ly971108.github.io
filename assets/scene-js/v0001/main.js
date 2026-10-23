@@ -31,13 +31,14 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x07080d);
 
-const camera = new THREE.PerspectiveCamera(35, 1, 0.05, 60);
+const camera = new THREE.PerspectiveCamera(45, 1, 0.05, 60);
 /* M11 清晰度: 默认机位收紧(原 4.7m 全景 → 3.5m), 道具细节更可读
+ * M11e: FOV 35→45 + 默认 4.0m, 视野更开阔
  * 球坐标环绕: 中键拖拽转方向, 滚轮推拉(见下方监听) */
 const CAM_TARGET = new THREE.Vector3(-0.35, 1.0, -0.25);
 let camTheta = Math.atan2(0.62, 0.69);                       /* 水平方位角 */
 let camPolar = Math.acos(0.11 / Math.hypot(0.62, 0.11, 0.69)); /* 极角(自 +Y) */
-let camDist = 3.5;
+let camDist = 4.0;
 function applyCam() {
   const sp = Math.sin(camPolar);
   camera.position.set(
@@ -186,6 +187,69 @@ function start() {
           n.indexOf("ground") >= 0 ? 0.35 :
           n.indexOf("insu") >= 0 ? 0.8 :
           n.indexOf("pole") >= 0 ? 0.5 : 0.5;
+      });
+
+      /* M11e: 窗外加料 —— 补星 ×260、山脚村灯火、夜云两片(无光照材质, 2 draw calls)
+       * 坐标注意: three 里 y=上, z=横(= -Blender_y); 窗外纵深是 +x */
+      const rng = (function (s) { return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; })(20261023);
+      const starPos = new Float32Array(260 * 3), starCol = new Float32Array(260 * 3);
+      for (let i = 0; i < 260; i++) {
+        starPos[i * 3] = 11 + rng() * 6.5;          /* 纵深 x */
+        starPos[i * 3 + 1] = 1.0 + rng() * 5.8;     /* 高 y(Blender z) */
+        starPos[i * 3 + 2] = -7.5 + rng() * 15;     /* 横 z(= -Blender y) */
+        const b = 0.35 + rng() * 0.65, blue = rng() < 0.3;
+        starCol[i * 3] = b * (blue ? 0.62 : 1.0);
+        starCol[i * 3 + 1] = b * (blue ? 0.76 : 1.0);
+        starCol[i * 3 + 2] = b;
+      }
+      const starGeo = new THREE.BufferGeometry();
+      starGeo.setAttribute("position", new THREE.BufferAttribute(starPos, 3));
+      starGeo.setAttribute("color", new THREE.BufferAttribute(starCol, 3));
+      scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({
+        size: 0.045, vertexColors: true, sizeAttenuation: false,
+        transparent: true, opacity: 0.9, depthWrite: false
+      })));
+
+      /* 村灯火: 远山脚下可见 ground 条带上的暖黄小点(避开山脊遮挡: x<12.3, 低z) */
+      const vilPos = [], vilCol = [];
+      for (let i = 0; i < 20; i++) {
+        const warm = 0.8 + rng() * 0.2;
+        /* y=高 1.1–2.1(高于窗台投影线), z=横; x=纵深 8.6–9.9(远山脚前) */
+        vilPos.push(8.6 + rng() * 1.3, 1.1 + rng() * 1.0, -5.0 + rng() * 10);
+        vilCol.push(1.0 * warm, 0.62 * warm, 0.25 * warm);
+      }
+      const vilGeo = new THREE.BufferGeometry();
+      vilGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(vilPos), 3));
+      vilGeo.setAttribute("color", new THREE.BufferAttribute(new Float32Array(vilCol), 3));
+      scene.add(new THREE.Points(vilGeo, new THREE.PointsMaterial({
+        size: 3.5, vertexColors: true, sizeAttenuation: false,
+        transparent: true, opacity: 1.0, depthWrite: false
+      })));
+
+      /* 夜云两片: 程序柔边云团(canvas 径向渐变簇), 挂在山脊上方 */
+      const cloudTex = (function () {
+        const c = document.createElement("canvas");
+        c.width = 256; c.height = 64;
+        const g = c.getContext("2d");
+        for (let i = 0; i < 7; i++) {
+          const x = 36 + i * 31, y = 34 + Math.sin(i * 1.7) * 8, r = 17 + (i % 3) * 8;
+          const grad = g.createRadialGradient(x, y, 0, x, y, r);
+          grad.addColorStop(0, "rgba(255,255,255,0.55)");
+          grad.addColorStop(1, "rgba(255,255,255,0)");
+          g.fillStyle = grad; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill();
+        }
+        return new THREE.CanvasTexture(c);
+      })();
+      const cloudMat = new THREE.MeshBasicMaterial({
+        color: 0x2a3a5f, map: cloudTex, transparent: true, opacity: 0.5, depthWrite: false
+      });
+      [[13.2, 4.4, 5.0, 5.0, 0.05], [14.8, -4.2, 5.4, 6.0, -0.04]].forEach(function (c) {
+        const cloud = new THREE.Mesh(new THREE.PlaneGeometry(c[3], c[3] * 0.25), cloudMat);
+        cloud.position.set(c[0], c[2], -c[1]);       /* (纵深x, 高, 横z) */
+        cloud.position.set(c[0], c[1], c[2]);
+        cloud.rotation.y = -Math.PI / 2;
+        cloud.rotation.z = c[4] * 0.15;
+        scene.add(cloud);
       });
     }
 

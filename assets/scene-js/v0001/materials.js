@@ -88,8 +88,8 @@ void main() {
    * 地板只作用于黄昏——夜间保持纯烘焙，像素基线零扰动。 */
   float duskAmt = 1.0 - clamp(lampState, 0.0, 1.0);
   light = max(light, vec3(0.05) * duskAmt);
-  /* M11: 整幅烘焙曝光 ×1.35(线性域), 暗部可读且保住夜灯氛围 */
-  gl_FragColor = vec4(pow(base * light * 1.35, vec3(0.4545)), 1.0);
+  /* M11e: 整幅烘焙曝光 ×1.6(线性域), 用户反馈整体再亮些 */
+  gl_FragColor = vec4(pow(base * light * 1.6, vec3(0.4545)), 1.0);
 }
 `;
 

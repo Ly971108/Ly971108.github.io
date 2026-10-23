@@ -123,7 +123,7 @@ export function initAnim({ scene, bakedState }) {
   /* ---------- 窗外萤火虫：THREE.Points × 6 ---------- */
   /* 实际外景坐标（tools/blender/outside.py）：窗洞 x=2.0、y∈[-0.6,0.6]、z∈[0.9,2.3]，
    * 槐树 x≈6.0/y≈1.5/z≈2.2。萤火虫取窗与树之间庭院上空。 */
-  const FLY_N = 6;
+  const FLY_N = 16;                                  /* M11e: 6→16, 庭院萤火更成气候 */
   let flyPoints = null, flyPos = null, flyAlpha = null, flySize = null;
   const flyBase = new Float32Array(FLY_N * 3);       /* 基准位置 */
   const flyPhase = new Float32Array(FLY_N);          /* 漂移/闪烁相位 */
