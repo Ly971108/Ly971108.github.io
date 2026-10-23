@@ -60,6 +60,44 @@ async function shot(name, url, checks) {
 
 await shot('web_room.png', '?room=1', (r, e) => r.ready && r.calls > 0 && r.calls < 200 && r.tris < 200000 && e.length === 0);
 // 注：draw calls 预算 ≤60 是 M7 目标；M4 道具未合并前 190（每 mesh 一 call），M5 烘焙按图集分组合并时收紧
+
+// M6 交互冒烟：可交互目标发现 + 键盘灯态循环 + hash 路由
+{
+  const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  const errors = [];
+  page.on('pageerror', e => errors.push(String(e)));
+  page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+  await page.goto(base + '?room=1', { waitUntil: 'load' });
+  const r = await page.evaluate(async () => {
+    const ok = await new Promise(res => {
+      if (window.__RM_SCENE) return res(true);
+      const t = setTimeout(() => res(false), 8000);
+      addEventListener('__RM_READY', () => { clearTimeout(t); res(true); }, { once: true });
+    });
+    if (!ok) return { ready: false };
+    window.dispatchEvent(new CustomEvent('__RM_ENTER'));
+    const st0 = JSON.parse(JSON.stringify(window.__RM_STATE));
+    const lampBefore = window.__RM_BAKED.bakedState.lampState.value;
+    dispatchEvent(new KeyboardEvent('keydown', { key: 'l' }));
+    await new Promise(r2 => setTimeout(r2, 700));   /* rAF 在 evaluate 等待期间会推进 */
+    const lampAfter = window.__RM_BAKED.bakedState.lampState.value;
+    dispatchEvent(new KeyboardEvent('keydown', { key: 'f' }));
+    location.hash = '#posts';
+    dispatchEvent(new HashChangeEvent('hashchange'));
+    await new Promise(r2 => setTimeout(r2, 200));
+    return {
+      ready: true,
+      lampChanged: lampAfter < lampBefore - 0.02,   /* 缓动中: 1 → 0.35 */
+      fanState: window.__RM_STATE.fan,
+      routeChannel: window.__RM_STATE.channel,
+      osdText: (document.querySelector('.rm-osd') || {}).textContent || ''
+    };
+  });
+  const ok = r.ready && r.lampChanged && r.fanState === 1 && r.routeChannel === 1 && errors.length === 0;
+  console.log(ok ? 'PASS' : 'FAIL', 'web_interact', JSON.stringify(r), errors.length ? 'errors:' + errors.slice(0, 3).join(' | ') : '');
+  if (!ok) fail++;
+  await page.close();
+}
 await shot('web_plain.png', '?plain=1', (r, e) => {
   return true; // 静态版结构检查走 DOM（下一条）
 });

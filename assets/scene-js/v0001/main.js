@@ -7,6 +7,9 @@ import { loadRoom, loadProps, loadBaked } from "./loader.js";
 import { makeWhite, makeStub, makeSky } from "./materials.js";
 import { initRouter } from "./router.js";
 import { initPerf } from "./perf.js";
+import { initScreen } from "./screen.js";
+import { initPanel } from "./panel.js";
+import { initInteract } from "./interact.js";
 
 const root = document.getElementById("rm-root");
 /* data-scene-glb（camel）或 data-sceneglb 均可；缺省 assets/scene/v0001/ */
@@ -48,8 +51,13 @@ const perf = initPerf(renderer);
 initRouter();
 
 let started = false;
-function frame() {
+let interact = null;
+let lastT = 0;
+function frame(t) {
   requestAnimationFrame(frame);
+  const dt = lastT ? Math.min(t - lastT, 100) : 16;
+  lastT = t;
+  if (interact) interact.tick(dt);
   renderer.render(scene, camera);
   perf.tick();
 }
@@ -108,6 +116,14 @@ function start() {
       hemiLight.intensity = 0.32;
       window.__RM_BAKED = baked;
     }
+
+    /* M6：CRT 屏幕 + 阅读面板 + 交互（缺模块时降级不阻断） */
+    let screenApi = null, panelApi = null;
+    try { screenApi = initScreen(scene); } catch (e) { console.warn("[RM] screen 初始化失败:", e && e.message); }
+    try { panelApi = initPanel(); } catch (e) { console.warn("[RM] panel 初始化失败:", e && e.message); }
+    interact = initInteract({ scene, camera, renderer, baked, screen: screenApi, panel: panelApi });
+    window.__RM_SCREEN = screenApi;
+    window.__RM_PANEL_API = panelApi;
 
     /* manifest 可带固定机位（Blender 侧导出），缺省用上方 fallback */
     const c = manifest.camera;

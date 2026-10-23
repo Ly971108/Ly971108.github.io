@@ -5,3 +5,4 @@ Thumbs.db
 # Blender 中间产物（正式烘焙产物由 scene/<sha>/ 提交）
 tools/blender/out/
 bake-tmp/
+__pycache__/
