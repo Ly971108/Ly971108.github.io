@@ -32,12 +32,19 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x07080d);
 
 const camera = new THREE.PerspectiveCamera(35, 1, 0.05, 60);
-/* M11 清晰度: 默认机位收紧(原 4.7m 全景 → 3.5m), 道具细节更可读 */
+/* M11 清晰度: 默认机位收紧(原 4.7m 全景 → 3.5m), 道具细节更可读
+ * 球坐标环绕: 中键拖拽转方向, 滚轮推拉(见下方监听) */
 const CAM_TARGET = new THREE.Vector3(-0.35, 1.0, -0.25);
-const CAM_DIR = new THREE.Vector3(0.62, 0.11, 0.69).normalize();  /* 从目标指向机位 */
+let camTheta = Math.atan2(0.62, 0.69);                       /* 水平方位角 */
+let camPolar = Math.acos(0.11 / Math.hypot(0.62, 0.11, 0.69)); /* 极角(自 +Y) */
 let camDist = 3.5;
 function applyCam() {
-  camera.position.copy(CAM_TARGET).addScaledVector(CAM_DIR, camDist);
+  const sp = Math.sin(camPolar);
+  camera.position.set(
+    CAM_TARGET.x + camDist * sp * Math.sin(camTheta),
+    CAM_TARGET.y + camDist * Math.cos(camPolar),
+    CAM_TARGET.z + camDist * sp * Math.cos(camTheta)
+  );
   camera.lookAt(CAM_TARGET);
 }
 applyCam();
@@ -49,6 +56,22 @@ addEventListener("wheel", (ev) => {
   camDist = Math.min(5.0, Math.max(2.0, camDist * (1 + ev.deltaY * 0.0012)));
   applyCam();
 }, { passive: true });
+
+/* M11b: 鼠标中键按住环绕查看房间布局(极角钳制防穿地/翻天) */
+let orbiting = false, orbitX = 0, orbitY = 0;
+renderer.domElement.addEventListener("mousedown", (ev) => {
+  if (ev.button !== 1) return;
+  ev.preventDefault();                           /* 阻止自动滚动 */
+  orbiting = true; orbitX = ev.clientX; orbitY = ev.clientY;
+});
+addEventListener("mousemove", (ev) => {
+  if (!orbiting) return;
+  camTheta -= (ev.clientX - orbitX) * 0.005;
+  camPolar = Math.min(1.70, Math.max(0.5, camPolar - (ev.clientY - orbitY) * 0.005));
+  orbitX = ev.clientX; orbitY = ev.clientY;
+  applyCam();
+});
+addEventListener("mouseup", (ev) => { if (ev.button === 1) orbiting = false; });
 
 /* M2 临时灯光（M5 烘焙接入后降为微光仅供可动道具，M6 再定稿动态道具照明） */
 const hemiLight = new THREE.HemisphereLight(0xbfd0e0, 0x30281f, 0.9);

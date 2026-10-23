@@ -245,7 +245,7 @@ export function initInteract(ctx) {
 
   const cv = renderer.domElement;
   cv.addEventListener("pointermove", (ev) => setHover(pick(ev), ev));
-  cv.addEventListener("pointerdown", (ev) => { const t = pick(ev); if (t) t.action(); });
+  cv.addEventListener("pointerdown", (ev) => { if (ev.button !== 0) return; const t = pick(ev); if (t) t.action(); });
   cv.addEventListener("pointerleave", () => setHover(null, {}));
   addEventListener("keydown", onKey);
   addEventListener("hashchange", onRoute);

@@ -125,6 +125,18 @@ await shot('web_room.png', '?room=1', (r, e) => r.ready && r.calls > 0 && r.call
   const clickOk = chOk && volOk;
   console.log(clickOk ? 'PASS' : 'FAIL', 'web_mouse_click', JSON.stringify({ chBefore, chAfter, hashAfter, osd: clickR.osd }));
   if (!clickOk) fail++;
+
+  /* M11b 中键环绕回归：按住中键拖动 → 相机位置必须变化 */
+  const p0 = await page.evaluate(() => window.__RM_SCENE.camera.position.toArray());
+  await page.mouse.move(640, 360);
+  await page.mouse.down({ button: 'middle' });
+  await page.mouse.move(860, 300, { steps: 5 });
+  await page.mouse.up({ button: 'middle' });
+  await page.waitForTimeout(150);
+  const p1 = await page.evaluate(() => window.__RM_SCENE.camera.position.toArray());
+  const orbitMoved = p0.some((v, i) => Math.abs(v - p1[i]) > 0.02);
+  console.log(orbitMoved ? 'PASS' : 'FAIL', 'web_orbit', JSON.stringify({ p0, p1 }));
+  if (!orbitMoved) fail++;
   await page.close();
 }
 await shot('web_plain.png', '?plain=1', (r, e) => {
