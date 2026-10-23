@@ -68,9 +68,11 @@ uniform float lampState;
 uniform vec3 tvColor;
 void main() {
   vec3 base  = texture2D(mapColor, vUv).rgb;
-  vec3 lamps = pow(texture2D(mapIrrA, vUv).rgb, vec3(3.0));
-  vec3 tv    = pow(texture2D(mapIrrB, vUv).rgb, vec3(3.0));
-  vec3 dusk  = pow(texture2D(mapIrrC, vUv).rgb, vec3(3.0));
+  /* M11c: 对比度 3.0→1.8 —— 原曲线把中间调压成棕泥(用户实拍反馈看不清),
+   * 1.8 保留夜灯反差同时暗部细节可读 */
+  vec3 lamps = pow(texture2D(mapIrrA, vUv).rgb, vec3(1.8));
+  vec3 tv    = pow(texture2D(mapIrrB, vUv).rgb, vec3(1.8));
+  vec3 dusk  = pow(texture2D(mapIrrC, vUv).rgb, vec3(1.8));
   vec3 light = mix(dusk, lamps, clamp(lampState, 0.0, 1.0)) + tv * tvColor;
   /* M9-P2: 黄昏态环境光地板（随 lampState 淡出），避免 lampState=0 时背光面全黑死。
    * 地板只作用于黄昏——夜间保持纯烘焙，像素基线零扰动。 */
