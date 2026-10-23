@@ -64,7 +64,7 @@ export async function loadBaked(base, manifest) {
       tex.flipY = false;
       tex.colorSpace = THREE.SRGBColorSpace;
       tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
-      tex.anisotropy = 4;
+      tex.anisotropy = 8;                           /* M11: 斜视角墙面/地面锐度 */
       t["map" + k.charAt(0).toUpperCase() + k.slice(1)] = tex;
     }
     groups[g] = { material: bakedLightShader(t), meshes: (uv2.atlases[g] || {}).meshes || [] };

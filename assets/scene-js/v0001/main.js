@@ -24,6 +24,7 @@ const renderer = new THREE.WebGLRenderer({
   powerPreference: "high-performance"
 });
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.18;             /* M11: 提亮ACES压暗, 暗部细节可读 */
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
@@ -31,8 +32,23 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x07080d);
 
 const camera = new THREE.PerspectiveCamera(35, 1, 0.05, 60);
-camera.position.set(2.9, 1.55, 3.1);
-camera.lookAt(-0.3, 1.05, -0.2);
+/* M11 清晰度: 默认机位收紧(原 4.7m 全景 → 3.5m), 道具细节更可读 */
+const CAM_TARGET = new THREE.Vector3(-0.35, 1.0, -0.25);
+const CAM_DIR = new THREE.Vector3(0.62, 0.11, 0.69).normalize();  /* 从目标指向机位 */
+let camDist = 3.5;
+function applyCam() {
+  camera.position.copy(CAM_TARGET).addScaledVector(CAM_DIR, camDist);
+  camera.lookAt(CAM_TARGET);
+}
+applyCam();
+
+/* 滚轮推拉(2.0–5.0m), 面板打开时不响应 */
+addEventListener("wheel", (ev) => {
+  if (document.querySelector(".rm-panel-overlay:not([hidden])")) return;
+  if (!started) return;
+  camDist = Math.min(5.0, Math.max(2.0, camDist * (1 + ev.deltaY * 0.0012)));
+  applyCam();
+}, { passive: true });
 
 /* M2 临时灯光（M5 烘焙接入后降为微光仅供可动道具，M6 再定稿动态道具照明） */
 const hemiLight = new THREE.HemisphereLight(0xbfd0e0, 0x30281f, 0.9);
