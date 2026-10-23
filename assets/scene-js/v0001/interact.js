@@ -48,6 +48,8 @@ function collectTargets() {
   add([scene.getObjectByName("prop_tv_knob_volume")].filter(Boolean),
     "音量 (V)", () => {
       state.volume = (state.volume + 1) % 4;
+      /* M9: 音量旋钮真实作用于 CRT 音量增益 */
+      if (screenApi && screenApi.setGain) screenApi.setGain(state.volume / 3);
       osd("音量 " + (state.volume === 0 ? "静音" : state.volume + "/3"));
       sfx("knob");
     });
@@ -76,7 +78,7 @@ function collectTargets() {
       osd("声音 · " + (state.sound ? "开" : "关"));
     });
 
-  add([scene.getObjectByName("prop_notebook_cover")].filter(Boolean),
+  add(findByName(/^prop_notebook_cover/),      /* GLB 实际为 _L/_R 两半 */
     "作业本 · 阅读", () => {
       const p = (window.__RM && window.__RM.posts && window.__RM.posts[0]) || null;
       if (panelApi && panelApi.openPost) panelApi.openPost(p ? p.u : "posts/index.html");
@@ -111,10 +113,18 @@ function collectTargets() {
 /* ---------- hash 同步（router.js 只改 HUD，这里接业务） ---------- */
 function setHash(h) {
   if (("#" + (location.hash || "").replace(/^#\/?/, "")) === h) return;
-  history.pushState(null, "", h);                /* hashchange 会触发 onRoute */
+  /* M9-P1-4: 直接赋值 location.hash，绕开 index.html 的 pushState 包装器
+   * （包装器会把 #about 改写成 /about/ path 形态，导致 hashchange 丢失） */
+  location.hash = h;
 }
 function onRoute() {
   const h = "#" + (location.hash || "").replace(/^#\/?/, "");
+  /* M9-P2: #reading 直开阅读面板（夜读深链） */
+  if (h === "#reading" && panelApi && panelApi.openPost) {
+    const p = (window.__RM && window.__RM.posts && window.__RM.posts[0]) || null;
+    panelApi.openPost(p ? p.u : "posts/index.html");
+    return;
+  }
   const i = CHANNEL_HASH.indexOf(h);
   if (i >= 0 && screenApi && screenApi.setChannel && state.channel !== i) {
     state.channel = i;
@@ -198,7 +208,11 @@ function onKey(ev) {
   else if (k === "l") { const t = targets.find((x) => /拉线/.test(x.tip)); if (t) t.action(); }
   else if (k === "f") { const t = targets.find((x) => /风扇/.test(x.tip)); if (t) t.action(); }
   else if (k === "v") { const t = targets.find((x) => /音量/.test(x.tip)); if (t) t.action(); }
-  else if (k === "n") { if (screenApi && screenApi.nextItem) screenApi.nextItem(); }
+  /* M9-P1-2: O 键补收录机（默认机位在视口外，键盘可达 = 可访问性） */
+  else if (k === "o") { const t = targets.find((x) => /收录机/.test(x.tip)); if (t) t.action(); }
+  /* M9-P2: 方向键在 CRT 列表内移动（等同 N 键下翻） */
+  else if (k === "n" || k === "arrowdown") { if (screenApi && screenApi.nextItem) screenApi.nextItem(); }
+  else if (k === "arrowup") { if (screenApi && screenApi.selectPrev) screenApi.selectPrev(); }
   else if (k === "escape") { setHash("#"); }
 }
 
@@ -235,6 +249,7 @@ export function initInteract(ctx) {
   cv.addEventListener("pointerleave", () => setHover(null, {}));
   addEventListener("keydown", onKey);
   addEventListener("hashchange", onRoute);
+  onRoute();                                       /* M9-P1-3: 初始 hash 恢复频道 */
 
   /* 供 main.js 每帧调用 */
   return { tick };

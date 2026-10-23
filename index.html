@@ -210,8 +210,9 @@
     if(home&&/^#about$/.test(location.hash)) return location.replace(R.about), true;
     if(soft){ var t2=d.getElementById("rm-try"); if(t2) t2.hidden=false; var hero=d.getElementById("rm-hero"); if(hero) hero.href="?room=1"; }
     var warn=d.getElementById("rm-warn"), wx=d.getElementById("rm-warn-x");
+    /* M9-P2: 任何静态版路径都给出 3D 入口（移动端默认静态也要有得选），不限 reading 态 */
+    [].forEach.call(d.querySelectorAll(".rm-fallback a.ph-room[data-room]"),function(a){ a.href=R.home+"?room=1"; a.hidden=false; });
     if(read){ if(warn) warn.hidden=true;
-      [].forEach.call(d.querySelectorAll(".rm-fallback a.ph-room[data-room]"),function(a){ a.href=R.home+"?room=1"; a.hidden=false; });
       var hero2=d.getElementById("rm-hero"); if(hero2){ hero2.href=R.home+"?room=1"; hero2.onclick=unread; } }
     else if(warn&&wx){ try{ if(localStorage.getItem("rm.plainWarn")==="off") warn.hidden=true; }catch(e){}
       wx.hidden=false; wx.onclick=function(){ warn.hidden=true; try{ localStorage.setItem("rm.plainWarn","off"); }catch(e){} }; }

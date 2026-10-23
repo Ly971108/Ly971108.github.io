@@ -72,6 +72,10 @@ void main() {
   vec3 tv    = pow(texture2D(mapIrrB, vUv).rgb, vec3(3.0));
   vec3 dusk  = pow(texture2D(mapIrrC, vUv).rgb, vec3(3.0));
   vec3 light = mix(dusk, lamps, clamp(lampState, 0.0, 1.0)) + tv * tvColor;
+  /* M9-P2: 黄昏态环境光地板（随 lampState 淡出），避免 lampState=0 时背光面全黑死。
+   * 地板只作用于黄昏——夜间保持纯烘焙，像素基线零扰动。 */
+  float duskAmt = 1.0 - clamp(lampState, 0.0, 1.0);
+  light = max(light, vec3(0.05) * duskAmt);
   gl_FragColor = vec4(pow(base * light, vec3(0.4545)), 1.0);
 }
 `;

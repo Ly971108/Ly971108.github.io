@@ -96,6 +96,35 @@ await shot('web_room.png', '?room=1', (r, e) => r.ready && r.calls > 0 && r.call
   const ok = r.ready && r.lampChanged && r.fanState === 1 && r.routeChannel === 1 && errors.length === 0;
   console.log(ok ? 'PASS' : 'FAIL', 'web_interact', JSON.stringify(r), errors.length ? 'errors:' + errors.slice(0, 3).join(' | ') : '');
   if (!ok) fail++;
+
+  /* M9 鼠标点击回归（QA-P0 教训：此前全用键盘/dispatchEvent，漏了真实指针命中） */
+  const click = await page.evaluate(() => {
+    const s = window.__RM_SCENE;
+    const v = new (Object.getPrototypeOf(s.camera.position).constructor)();
+    function toScreen(name) {
+      const o = s.scene.getObjectByName(name);
+      if (!o) return null;
+      o.getWorldPosition(v);
+      v.project(s.camera);
+      const cv = s.renderer.domElement.getBoundingClientRect();
+      return { x: cv.left + (v.x * 0.5 + 0.5) * cv.width, y: cv.top + (-v.y * 0.5 + 0.5) * cv.height };
+    }
+    return { ch: toScreen('prop_tv_knob_channel'), vol: toScreen('prop_tv_knob_volume') };
+  });
+  const chBefore = await page.evaluate(() => window.__RM_STATE.channel);
+  if (click.ch) await page.mouse.click(click.ch.x, click.ch.y);
+  await page.waitForTimeout(300);
+  const chAfter = await page.evaluate(() => window.__RM_STATE.channel);
+  const hashAfter = await page.evaluate(() => location.hash);
+  if (click.vol) await page.mouse.click(click.vol.x, click.vol.y);
+  await page.waitForTimeout(300);
+  const clickR = await page.evaluate(() => ({ vol: window.__RM_STATE.volume, osd: (document.querySelector('.rm-osd') || {}).textContent || '' }));
+  /* 频道从 1(#posts 路由留下的) 或 0 出发, 点击后必须变；音量 2→3 或 0→1 */
+  const chOk = chAfter !== chBefore;
+  const volOk = click.vol ? clickR.vol !== 2 : true;
+  const clickOk = chOk && volOk;
+  console.log(clickOk ? 'PASS' : 'FAIL', 'web_mouse_click', JSON.stringify({ chBefore, chAfter, hashAfter, osd: clickR.osd }));
+  if (!clickOk) fail++;
   await page.close();
 }
 await shot('web_plain.png', '?plain=1', (r, e) => {

@@ -20,6 +20,8 @@ const CSS = /* css */ `
   font-family: "PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
 }
 .rm-panel-overlay.rm-panel-open { opacity: 1; }
+/* hidden 属性必须压过 display:flex, 否则初始全屏透明遮罩吞掉全部指针事件 */
+.rm-panel-overlay[hidden] { display: none !important; }
 
 .rm-panel-card {
   position: relative;
