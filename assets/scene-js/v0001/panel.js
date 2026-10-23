@@ -119,6 +119,7 @@ export function initPanel() {
     if (open) return;
     open = true;
     overlay.hidden = false;
+    try { closeBtn.focus({ preventScroll: true }); } catch (e) {}
     /* 下一帧再加 class，让过渡生效 */
     requestAnimationFrame(() => overlay.classList.add("rm-panel-open"));
     dispatch(true);
